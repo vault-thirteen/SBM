@@ -14,200 +14,247 @@ import (
 
 func Test_readTopHeaders(t *testing.T) {
 
-	var data []byte
+	// Test Type (Kind).
+	const (
+		TestKindMustBeNoError    = 1
+		TestKindMustBeAnyError   = 2
+		TestKindMustBeExactError = 3
+	)
+
+	type Test struct {
+		kind              byte
+		data              []byte
+		sbm               *Sbm
+		sbmExpected       Sbm
+		errorTextExpected string
+	}
+
 	var err error
 	var lineReader *rdr.Reader
 	var reader io.Reader
-	var sbm *Sbm
-	var sbmExpected Sbm
+	var test Test
+	var testIdx int
+	var tests []Test
 	var tst *tester.Test
 
 	tst = tester.New(t)
+	tests = make([]Test, 0)
 
 	// Test #1. Positive.
-	data = []byte(
-		"SBM (SIMPLE BIT MAP)" + NL +
-			"VERSION 1" + NL +
-			"WIDTH 123 (100 + 23)" + NL +
-			"HEIGHT 456 (450 + 6)" + NL +
-			"AREA 56088 (56000 + 88)" + NL +
-			"SOME JUNK IS HERE",
-	)
-	sbm = new(Sbm)
-	sbmExpected = Sbm{
-		format: SbmFormat{
-			version: SbmFormatVersion1,
-		},
-		pixelArray: SbmPixelArray{
-			data: SbmPixelArrayData{},
-			metaData: SbmPixelArrayMetaData{
-				width:  123,
-				height: 456,
-				area:   56088,
-				header: SbmPixelArrayMetaDataHeader{
-					width: SbmPixelArrayMetaDataHeaderData{
-						topLeft:  100,
-						topRight: 23,
-					},
-					height: SbmPixelArrayMetaDataHeaderData{
-						topLeft:  450,
-						topRight: 6,
-					},
-					area: SbmPixelArrayMetaDataHeaderData{
-						topLeft:  56000,
-						topRight: 88,
+	test = Test{
+		kind: TestKindMustBeNoError,
+		data: []byte(
+			"SBM (SIMPLE BIT MAP)" + NL +
+				"VERSION 1" + NL +
+				"WIDTH 123 (100 + 23)" + NL +
+				"HEIGHT 456 (450 + 6)" + NL +
+				"AREA 56088 (56000 + 88)" + NL +
+				"SOME JUNK IS HERE",
+		),
+		sbm: new(Sbm),
+		sbmExpected: Sbm{
+			format: SbmFormat{
+				version: SbmFormatVersion1,
+			},
+			pixelArray: SbmPixelArray{
+				data: SbmPixelArrayData{},
+				metaData: SbmPixelArrayMetaData{
+					width:  123,
+					height: 456,
+					area:   56088,
+					header: SbmPixelArrayMetaDataHeader{
+						width: SbmPixelArrayMetaDataHeaderData{
+							topLeft:  100,
+							topRight: 23,
+						},
+						height: SbmPixelArrayMetaDataHeaderData{
+							topLeft:  450,
+							topRight: 6,
+						},
+						area: SbmPixelArrayMetaDataHeaderData{
+							topLeft:  56000,
+							topRight: 88,
+						},
 					},
 				},
 			},
 		},
+		errorTextExpected: "",
 	}
-	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
-	err = sbm.readTopHeaders(lineReader)
-	tst.MustBeNoError(err)
-	tst.MustBeEqual(*sbm, sbmExpected)
+	tests = append(tests, test)
 
 	// Test #2. Negative. Bad Format Header.
-	data = []byte(
-		"SOME JUNK IS HERE",
-	)
-	sbm = new(Sbm)
-	sbmExpected = Sbm{}
-	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
-	err = sbm.readTopHeaders(lineReader)
-	tst.MustBeAnError(err)
-	tst.MustBeEqual(*sbm, sbmExpected)
+	test = Test{
+		kind: TestKindMustBeAnyError,
+		data: []byte(
+			"SBM (SIMPLE HACKED MAP)\r\n" +
+				"JUNK",
+		),
+		sbm:               new(Sbm),
+		sbmExpected:       Sbm{},
+		errorTextExpected: "",
+	}
+	tests = append(tests, test)
 
 	// Test #3. Negative. Bad Format Header.
-	data = []byte(
-		"SBM (SIMPLE HACKED MAP)\r\n" +
-			"JUNK",
-	)
-	sbm = new(Sbm)
-	sbmExpected = Sbm{}
-	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
-	err = sbm.readTopHeaders(lineReader)
-	tst.MustBeAnError(err)
-	tst.MustBeEqual(*sbm, sbmExpected)
+	test = Test{
+		kind: TestKindMustBeAnyError,
+		data: []byte(
+			"SOME JUNK IS HERE",
+		),
+		sbm:               new(Sbm),
+		sbmExpected:       Sbm{},
+		errorTextExpected: "",
+	}
+	tests = append(tests, test)
 
 	// Test #4. Negative. Bad Version Header.
-	data = []byte(
-		"SBM (SIMPLE BIT MAP)\r\n" +
-			"VERSION JUNK",
-	)
-	sbm = new(Sbm)
-	sbmExpected = Sbm{}
-	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
-	err = sbm.readTopHeaders(lineReader)
-	tst.MustBeAnError(err)
-	tst.MustBeEqual(*sbm, sbmExpected)
+	test = Test{
+		kind: TestKindMustBeAnyError,
+		data: []byte(
+			"SBM (SIMPLE BIT MAP)\r\n" +
+				"VERSION JUNK",
+		),
+		sbm:               new(Sbm),
+		sbmExpected:       Sbm{},
+		errorTextExpected: "",
+	}
+	tests = append(tests, test)
 
 	// Test #5. Negative. Bad Version Header.
-	data = []byte(
-		"SBM (SIMPLE BIT MAP)\r\n" +
-			"VERSION JUNK\r\n" +
-			"XYZ",
-	)
-	sbm = new(Sbm)
-	sbmExpected = Sbm{}
-	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
-	err = sbm.readTopHeaders(lineReader)
-	tst.MustBeAnError(err)
-	tst.MustBeEqual(*sbm, sbmExpected)
+	test = Test{
+		kind: TestKindMustBeAnyError,
+		data: []byte(
+			"SBM (SIMPLE BIT MAP)\r\n" +
+				"VERSION JUNK\r\n" +
+				"XYZ",
+		),
+		sbm:               new(Sbm),
+		sbmExpected:       Sbm{},
+		errorTextExpected: "",
+	}
+	tests = append(tests, test)
 
 	// Test #6. Negative. Bad Version Header.
-	data = []byte(
-		"SBM (SIMPLE BIT MAP)\r\n" +
-			"VERSION 123\r\n" +
-			"JUNK",
-	)
-	sbm = new(Sbm)
-	sbmExpected = Sbm{}
-	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
-	err = sbm.readTopHeaders(lineReader)
-	tst.MustBeAnError(err)
-	tst.MustBeEqual(*sbm, sbmExpected)
+	test = Test{
+		kind: TestKindMustBeAnyError,
+		data: []byte(
+			"SBM (SIMPLE BIT MAP)\r\n" +
+				"VERSION 123\r\n" +
+				"JUNK",
+		),
+		sbm:               new(Sbm),
+		sbmExpected:       Sbm{},
+		errorTextExpected: "",
+	}
+	tests = append(tests, test)
 
 	// Test #7. Negative. Bad Width Header.
-	data = []byte(
-		"SBM (SIMPLE BIT MAP)\r\n" +
-			"VERSION 1\r\n" +
-			"JUNK",
-	)
-	sbm = new(Sbm)
-	sbmExpected = Sbm{
-		format: SbmFormat{
-			version: SbmFormatVersion1,
+	test = Test{
+		kind: TestKindMustBeAnyError,
+		data: []byte(
+			"SBM (SIMPLE BIT MAP)\r\n" +
+				"VERSION 1\r\n" +
+				"JUNK",
+		),
+		sbm: new(Sbm),
+		sbmExpected: Sbm{
+			format: SbmFormat{
+				version: SbmFormatVersion1,
+			},
 		},
+		errorTextExpected: "",
 	}
-	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
-	err = sbm.readTopHeaders(lineReader)
-	tst.MustBeAnError(err)
-	tst.MustBeEqual(*sbm, sbmExpected)
+	tests = append(tests, test)
 
 	// Test #8. Negative. Bad Width Header.
-	data = []byte(
-		"SBM (SIMPLE BIT MAP)\r\n" +
-			"VERSION 1\r\n" +
-			"WIDTH JUNK\r\n" +
-			"XYZ",
-	)
-	sbm = new(Sbm)
-	sbmExpected = Sbm{
-		format: SbmFormat{
-			version: SbmFormatVersion1,
+	test = Test{
+		kind: TestKindMustBeAnyError,
+		data: []byte(
+			"SBM (SIMPLE BIT MAP)\r\n" +
+				"VERSION 1\r\n" +
+				"WIDTH JUNK\r\n" +
+				"XYZ",
+		),
+		sbm: new(Sbm),
+		sbmExpected: Sbm{
+			format: SbmFormat{
+				version: SbmFormatVersion1,
+			},
 		},
+		errorTextExpected: "",
 	}
-	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
-	err = sbm.readTopHeaders(lineReader)
-	tst.MustBeAnError(err)
-	tst.MustBeEqual(*sbm, sbmExpected)
+	tests = append(tests, test)
 
 	// Test #9. Negative. Bad Area.
-	data = []byte(
-		"SBM (SIMPLE BIT MAP)" + NL +
-			"VERSION 1" + NL +
-			"WIDTH 123 (100 + 23)" + NL +
-			"HEIGHT 456 (450 + 6)" + NL +
-			"AREA 56089 (56000 + 89)" + NL +
-			"SOME JUNK IS HERE",
-	)
-	sbm = new(Sbm)
-	sbmExpected = Sbm{
-		format: SbmFormat{
-			version: SbmFormatVersion1,
-		},
-		pixelArray: SbmPixelArray{
-			metaData: SbmPixelArrayMetaData{
-				width:  123,
-				height: 456,
-				header: SbmPixelArrayMetaDataHeader{
-					width: SbmPixelArrayMetaDataHeaderData{
-						topLeft:  100,
-						topRight: 23,
+	test = Test{
+		kind: TestKindMustBeAnyError,
+		data: []byte(
+			"SBM (SIMPLE BIT MAP)" + NL +
+				"VERSION 1" + NL +
+				"WIDTH 123 (100 + 23)" + NL +
+				"HEIGHT 456 (450 + 6)" + NL +
+				"AREA 56089 (56000 + 89)" + NL +
+				"SOME JUNK IS HERE",
+		),
+		sbm: new(Sbm),
+		sbmExpected: Sbm{
+			format: SbmFormat{
+				version: SbmFormatVersion1,
+			},
+			pixelArray: SbmPixelArray{
+				metaData: SbmPixelArrayMetaData{
+					width:  123,
+					height: 456,
+					header: SbmPixelArrayMetaDataHeader{
+						width: SbmPixelArrayMetaDataHeaderData{
+							topLeft:  100,
+							topRight: 23,
+						},
+						height: SbmPixelArrayMetaDataHeaderData{
+							topLeft:  450,
+							topRight: 6,
+						},
+						area: SbmPixelArrayMetaDataHeaderData{},
 					},
-					height: SbmPixelArrayMetaDataHeaderData{
-						topLeft:  450,
-						topRight: 6,
-					},
-					area: SbmPixelArrayMetaDataHeaderData{},
 				},
 			},
 		},
+		errorTextExpected: "",
 	}
-	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
-	err = sbm.readTopHeaders(lineReader)
-	tst.MustBeAnError(err)
-	tst.MustBeEqual(err.Error(), ErrAreaMismatch)
-	tst.MustBeEqual(*sbm, sbmExpected)
+	tests = append(tests, test)
+
+	// Run the Tests.
+	for testIdx, test = range tests {
+
+		// Run the Action.
+		reader = bytes.NewReader(test.data)
+		lineReader = rdr.New(reader)
+		err = test.sbm.readTopHeaders(lineReader)
+
+		// Check.
+		switch test.kind {
+
+		case TestKindMustBeNoError:
+			tst.MustBeNoError(err)
+
+		case TestKindMustBeAnyError:
+			tst.MustBeAnError(err)
+
+		case TestKindMustBeExactError:
+			tst.MustBeAnError(err)
+			tst.MustBeEqual(err.Error(), test.errorTextExpected)
+
+		default:
+			t.FailNow()
+		}
+
+		tst.MustBeDifferent(test.sbm, nil)
+		tst.MustBeEqual(*(test.sbm), test.sbmExpected)
+
+		fmt.Printf("[%v]", testIdx+1)
+	}
+	fmt.Println()
 }
 
 func Test_readArrayData(t *testing.T) {
