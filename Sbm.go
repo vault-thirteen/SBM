@@ -36,5 +36,3 @@ type Sbm struct {
 	// Pixel Array Data & Parameters.
 	pixelArray SbmPixelArray
 }
-
-//TODO: Make more Tests...

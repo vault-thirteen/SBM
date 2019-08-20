@@ -3,8 +3,6 @@ package sbm
 import (
 	"errors"
 	"fmt"
-	"math"
-
 	"github.com/vault-thirteen/bit"
 	rdr "github.com/vault-thirteen/reader"
 )
@@ -12,7 +10,6 @@ import (
 // Errors.
 const (
 	ErrBottomHeaderMismatch = "Bottom Header Mismatch"
-	ErrReadSizeTooBig       = "Read Size is too big"
 	ErrBadSeparator         = "Bad Separator"
 	ErrAreaMismatch         = "Area Mismatch"
 )
@@ -126,12 +123,6 @@ func (sbm *Sbm) readArrayData(
 	} else {
 		lastByteIsPartial = true
 		readBytesSize = (sbm.pixelArray.metaData.area / bit.BitsPerByte) + 1
-	}
-
-	// Check.
-	if readBytesSize > math.MaxInt64 {
-		err = errors.New(ErrReadSizeTooBig)
-		return
 	}
 
 	// Read the Array.
