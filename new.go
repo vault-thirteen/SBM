@@ -1,6 +1,8 @@
+// new.go.
+
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright © 2019 by Vault Thirteen.
+// Copyright © 2019..2020 by Vault Thirteen.
 //
 // All rights reserved. No part of this publication may be reproduced,
 // distributed, or transmitted in any form or by any means, including
@@ -218,7 +220,7 @@ func NewFromStream(
 	var sbm *Sbm
 
 	sbm = new(Sbm)
-	lineReader = rdr.New(reader)
+	lineReader = rdr.NewReader(reader)
 
 	// Read the top Headers.
 	err = sbm.readTopHeaders(lineReader)

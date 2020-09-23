@@ -1,6 +1,8 @@
+// read.go.
+
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright © 2019 by Vault Thirteen.
+// Copyright © 2019..2020 by Vault Thirteen.
 //
 // All rights reserved. No part of this publication may be reproduced,
 // distributed, or transmitted in any form or by any means, including
@@ -22,6 +24,7 @@ package sbm
 import (
 	"errors"
 	"fmt"
+
 	"github.com/vault-thirteen/bit"
 	rdr "github.com/vault-thirteen/reader"
 )

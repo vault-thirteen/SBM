@@ -1,4 +1,4 @@
-# sbm
+# SBM
 
 
 This Package provides a Model and Methods to work with the SBM Format. 

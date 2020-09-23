@@ -1,6 +1,8 @@
+// read_test.go.
+
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Copyright © 2019 by Vault Thirteen.
+// Copyright © 2019..2020 by Vault Thirteen.
 //
 // All rights reserved. No part of this publication may be reproduced,
 // distributed, or transmitted in any form or by any means, including
@@ -382,7 +384,7 @@ func Test_readTopHeaders(t *testing.T) {
 
 		// Run the Action.
 		reader = bytes.NewReader(test.data)
-		lineReader = rdr.New(reader)
+		lineReader = rdr.NewReader(reader)
 		err = test.sbm.readTopHeaders(lineReader)
 
 		// Check.
@@ -450,7 +452,7 @@ func Test_readArrayData(t *testing.T) {
 		},
 	}
 	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
+	lineReader = rdr.NewReader(reader)
 	err = sbm.readArrayData(lineReader)
 	tst.MustBeNoError(err)
 	tst.MustBeEqual(*sbm, sbmExpected)
@@ -485,7 +487,7 @@ func Test_readArrayData(t *testing.T) {
 		},
 	}
 	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
+	lineReader = rdr.NewReader(reader)
 	err = sbm.readArrayData(lineReader)
 	tst.MustBeNoError(err)
 	tst.MustBeEqual(*sbm, sbmExpected)
@@ -506,7 +508,7 @@ func Test_readArrayData(t *testing.T) {
 		},
 	}
 	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
+	lineReader = rdr.NewReader(reader)
 	err = sbm.readArrayData(lineReader)
 	tst.MustBeAnError(err)
 	tst.MustBeEqual(err.Error(), ErrBadSeparator)
@@ -530,7 +532,7 @@ func Test_readArrayData(t *testing.T) {
 		},
 	}
 	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
+	lineReader = rdr.NewReader(reader)
 	err = sbm.readArrayData(lineReader)
 	tst.MustBeAnError(err)
 	fmt.Println(err)
@@ -549,7 +551,7 @@ func Test_readArrayData(t *testing.T) {
 		},
 	}
 	reader = bytes.NewReader(data)
-	lineReader = rdr.New(reader)
+	lineReader = rdr.NewReader(reader)
 	err = sbm.readArrayData(lineReader)
 	tst.MustBeAnError(err)
 	tst.MustBeEqual(err.Error(), io.ErrUnexpectedEOF.Error())
@@ -1006,7 +1008,7 @@ func Test_readBottomHeaders(t *testing.T) {
 
 		// Run the Action.
 		reader = bytes.NewReader(test.data)
-		lineReader = rdr.New(reader)
+		lineReader = rdr.NewReader(reader)
 		err = test.sbm.readBottomHeaders(lineReader)
 
 		// Check.
@@ -1045,19 +1047,19 @@ func Test_readSeparator(t *testing.T) {
 
 	// Test #1. Positive.
 	reader = bytes.NewReader([]byte(NL))
-	lineReader = rdr.New(reader)
+	lineReader = rdr.NewReader(reader)
 	err = readSeparator(lineReader)
 	tst.MustBeNoError(err)
 
 	// Test #2. Negative.
 	reader = bytes.NewReader([]byte("ABC"))
-	lineReader = rdr.New(reader)
+	lineReader = rdr.NewReader(reader)
 	err = readSeparator(lineReader)
 	tst.MustBeAnError(err)
 
 	// Test #3. Negative.
 	reader = bytes.NewReader([]byte{})
-	lineReader = rdr.New(reader)
+	lineReader = rdr.NewReader(reader)
 	err = readSeparator(lineReader)
 	tst.MustBeAnError(err)
 }
