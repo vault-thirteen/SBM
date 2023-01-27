@@ -8,7 +8,7 @@ import (
 
 // Errors.
 const (
-	ErrVersion = "Version Error"
+	ErrVersion = "version error"
 )
 
 func validateFormat(

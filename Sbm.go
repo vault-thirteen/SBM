@@ -42,7 +42,7 @@ received from the Stream, not the Bits.
 
 // Errors.
 const (
-	ErrDimension = "Array Dimension Error"
+	ErrDimension = "array dimension error"
 )
 
 // SBM Internal Data Model.

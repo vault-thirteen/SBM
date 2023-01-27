@@ -8,8 +8,8 @@ import (
 
 // Errors.
 const (
-	ErrHeaderSize   = "Header is too short"
-	ErrHeaderEnding = "Header Ending Syntax Error"
+	ErrHeaderSize   = "header is too short"
+	ErrHeaderEnding = "header ending syntax error"
 )
 
 func removeCRLF(
