@@ -1,24 +1,5 @@
 // new.go.
 
-////////////////////////////////////////////////////////////////////////////////
-//
-// Copyright © 2019..2020 by Vault Thirteen.
-//
-// All rights reserved. No part of this publication may be reproduced,
-// distributed, or transmitted in any form or by any means, including
-// photocopying, recording, or other electronic or mechanical methods,
-// without the prior written permission of the publisher, except in the case
-// of brief quotations embodied in critical reviews and certain other
-// noncommercial uses permitted by copyright law. For permission requests,
-// write to the publisher, addressed “Copyright Protected Material” at the
-// address below.
-//
-////////////////////////////////////////////////////////////////////////////////
-//
-// Web Site Address:	https://github.com/vault-thirteen.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 package sbm
 
 import (
@@ -29,7 +10,7 @@ import (
 	rdr "github.com/vault-thirteen/reader"
 )
 
-// Creates a new SBM from an Array of Bits.
+// NewFromBitsArray creates a new SBM from an Array of Bits.
 // Performs the Fool Checks.
 func NewFromBitsArray(
 	arrayBits []bit.Bit, // List of all Bits of a 2D-Array in a 1D-Array.
@@ -53,7 +34,7 @@ func NewFromBitsArray(
 	return newFromBitsArray(arrayBits, arrayWidth, arrayHeight)
 }
 
-// Creates a new SBM from an Array of Bytes.
+// NewFromBytesArray creates a new SBM from an Array of Bytes.
 // Performs the Fool Checks.
 func NewFromBytesArray(
 	arrayBytes []byte, // List of all Bytes in a 1D-Array.
@@ -82,7 +63,7 @@ func NewFromBytesArray(
 	return newFromBytesArray(arrayBytes, arrayWidth, arrayHeight)
 }
 
-// Creates a new SBM from an Array of Bits.
+// newFromBitsArray creates a new SBM from an Array of Bits.
 // Does not perform the Fool Checks.
 func newFromBitsArray(
 	arrayBits []bit.Bit, // List of all Bits of a 2D-Array in a 1D-Array.
@@ -106,7 +87,7 @@ func newFromBitsArray(
 	)
 }
 
-// Creates a new SBM from an Array of Bits.
+// newFromBytesArray creates a new SBM from an Array of Bits.
 // Does not perform the Fool Checks.
 func newFromBytesArray(
 	arrayBytes []byte, // List of all Bytes in a 1D-Array.
@@ -135,8 +116,8 @@ func newFromBytesArray(
 	)
 }
 
-// Creates a new SBM from the Arrays of Bits and Bytes.
-// Does not perform the Fool Checks.
+// newFromBitsAndBytesArrays creates a new SBM from the Arrays of Bits and
+// Bytes. Does not perform the Fool Checks.
 func newFromBitsAndBytesArrays(
 	arrayBits []bit.Bit, // List of all Bits of a 2D-Array in a 1D-Array.
 	arrayBytes []byte, // List of all Bytes in a 1D-Array.
@@ -210,7 +191,7 @@ func newFromBitsAndBytesArrays(
 	return
 }
 
-// Reads an SBM Object from the Stream.
+// NewFromStream reads an SBM Object from the Stream.
 func NewFromStream(
 	reader io.Reader,
 ) (*Sbm, error) {

@@ -1,24 +1,5 @@
 // parse.go.
 
-////////////////////////////////////////////////////////////////////////////////
-//
-// Copyright © 2019..2020 by Vault Thirteen.
-//
-// All rights reserved. No part of this publication may be reproduced,
-// distributed, or transmitted in any form or by any means, including
-// photocopying, recording, or other electronic or mechanical methods,
-// without the prior written permission of the publisher, except in the case
-// of brief quotations embodied in critical reviews and certain other
-// noncommercial uses permitted by copyright law. For permission requests,
-// write to the publisher, addressed “Copyright Protected Material” at the
-// address below.
-//
-////////////////////////////////////////////////////////////////////////////////
-//
-// Web Site Address:	https://github.com/vault-thirteen.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 package sbm
 
 import (
@@ -39,8 +20,8 @@ const (
 	ErrIntegrity         = "Integrity Failure"
 )
 
-// Parses the Format Header.
-func (sbm Sbm) parseHeaderFormat(
+// parseHeaderFormat parses the Format Header.
+func (sbm *Sbm) parseHeaderFormat(
 	rawHeader []byte,
 ) (err error) {
 
@@ -52,7 +33,7 @@ func (sbm Sbm) parseHeaderFormat(
 	return
 }
 
-// Parses the 'Version' Header.
+// parseHeaderVersion parses the 'Version' Header.
 func parseHeaderVersion(
 	rawHeader []byte,
 ) (headerData HeaderDataVersion, err error) {
@@ -100,7 +81,7 @@ func parseHeaderVersion(
 	return
 }
 
-// Parses the Size Header.
+// parseHeaderSize parses the Size Header.
 func parseHeaderSize(
 	rawHeader []byte,
 	headerNameExpected string,
@@ -189,21 +170,21 @@ func parseHeaderSize(
 	return
 }
 
-// Parses the 'Width' Header.
+// parseHeaderWidth parses the 'Width' Header.
 func parseHeaderWidth(
 	rawHeader []byte,
 ) (headerData HeaderDataSize, err error) {
 	return parseHeaderSize(rawHeader, HeaderPrefix_Width)
 }
 
-// Parses the 'Height' Header.
+// parseHeaderHeight parses the 'Height' Header.
 func parseHeaderHeight(
 	rawHeader []byte,
 ) (headerData HeaderDataSize, err error) {
 	return parseHeaderSize(rawHeader, HeaderPrefix_Height)
 }
 
-// Parses the 'Area' Header.
+// parseHeaderArea parses the 'Area' Header.
 func parseHeaderArea(
 	rawHeader []byte,
 ) (headerData HeaderDataSize, err error) {

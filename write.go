@@ -1,24 +1,5 @@
 // write.go.
 
-////////////////////////////////////////////////////////////////////////////////
-//
-// Copyright © 2019..2020 by Vault Thirteen.
-//
-// All rights reserved. No part of this publication may be reproduced,
-// distributed, or transmitted in any form or by any means, including
-// photocopying, recording, or other electronic or mechanical methods,
-// without the prior written permission of the publisher, except in the case
-// of brief quotations embodied in critical reviews and certain other
-// noncommercial uses permitted by copyright law. For permission requests,
-// write to the publisher, addressed “Copyright Protected Material” at the
-// address below.
-//
-////////////////////////////////////////////////////////////////////////////////
-//
-// Web Site Address:	https://github.com/vault-thirteen.
-//
-////////////////////////////////////////////////////////////////////////////////
-
 package sbm
 
 import (
@@ -26,8 +7,8 @@ import (
 	"io"
 )
 
-// Writes an SBM Object into the Stream.
-func (sbm Sbm) Write(
+// Write writes an SBM Object into the Stream.
+func (sbm *Sbm) Write(
 	writer io.Writer,
 ) (err error) {
 
@@ -52,7 +33,7 @@ func (sbm Sbm) Write(
 	return
 }
 
-func (sbm Sbm) writeTopHeaders(
+func (sbm *Sbm) writeTopHeaders(
 	writer io.Writer,
 ) (err error) {
 
@@ -117,7 +98,7 @@ func (sbm Sbm) writeTopHeaders(
 	return
 }
 
-func (sbm Sbm) writeArrayData(
+func (sbm *Sbm) writeArrayData(
 	writer io.Writer,
 ) (err error) {
 
@@ -137,7 +118,7 @@ func (sbm Sbm) writeArrayData(
 	return
 }
 
-func (sbm Sbm) writeBottomHeaders(
+func (sbm *Sbm) writeBottomHeaders(
 	writer io.Writer,
 ) (err error) {
 
