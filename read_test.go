@@ -9,8 +9,8 @@ import (
 	"math"
 	"testing"
 
-	"github.com/vault-thirteen/bit"
-	rdr "github.com/vault-thirteen/reader"
+	"github.com/vault-thirteen/auxie/bit"
+	rdr "github.com/vault-thirteen/auxie/reader"
 	"github.com/vault-thirteen/tester"
 )
 

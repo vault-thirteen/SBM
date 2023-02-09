@@ -6,8 +6,8 @@ import (
 	"errors"
 	"io"
 
-	"github.com/vault-thirteen/bit"
-	rdr "github.com/vault-thirteen/reader"
+	"github.com/vault-thirteen/auxie/bit"
+	rdr "github.com/vault-thirteen/auxie/reader"
 )
 
 // NewFromBitsArray creates a new SBM from an Array of Bits.

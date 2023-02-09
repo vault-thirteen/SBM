@@ -3,7 +3,7 @@
 package sbm
 
 import (
-	"github.com/vault-thirteen/bit"
+	"github.com/vault-thirteen/auxie/bit"
 )
 
 func (sbm *Sbm) GetFormat() SbmFormat {

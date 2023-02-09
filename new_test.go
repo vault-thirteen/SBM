@@ -7,7 +7,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/vault-thirteen/bit"
+	"github.com/vault-thirteen/auxie/bit"
 	"github.com/vault-thirteen/tester"
 )
 
