@@ -3,7 +3,7 @@
 package sbm
 
 import (
-	"github.com/vault-thirteen/random"
+	"github.com/vault-thirteen/auxie/random"
 )
 
 // createRandomValuePair creates a Pair of random Values, which have the Sum
