@@ -3,7 +3,7 @@ module github.com/vault-thirteen/SBM
 go 1.19
 
 require (
-	github.com/vault-thirteen/auxie v0.5.0
+	github.com/vault-thirteen/auxie v0.5.1
 	github.com/vault-thirteen/tester v1.0.1
 )
 
