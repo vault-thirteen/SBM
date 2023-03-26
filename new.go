@@ -201,7 +201,7 @@ func NewFromStream(
 	var sbm *Sbm
 
 	sbm = new(Sbm)
-	lineReader = rdr.NewReader(reader)
+	lineReader = rdr.New(reader)
 
 	// Read the top Headers.
 	err = sbm.readTopHeaders(lineReader)

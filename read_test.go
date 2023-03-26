@@ -365,7 +365,7 @@ func Test_readTopHeaders(t *testing.T) {
 
 		// Run the Action.
 		reader = bytes.NewReader(test.data)
-		lineReader = rdr.NewReader(reader)
+		lineReader = rdr.New(reader)
 		err = test.sbm.readTopHeaders(lineReader)
 
 		// Check.
@@ -433,7 +433,7 @@ func Test_readArrayData(t *testing.T) {
 		},
 	}
 	reader = bytes.NewReader(data)
-	lineReader = rdr.NewReader(reader)
+	lineReader = rdr.New(reader)
 	err = sbm.readArrayData(lineReader)
 	tst.MustBeNoError(err)
 	tst.MustBeEqual(*sbm, sbmExpected)
@@ -468,7 +468,7 @@ func Test_readArrayData(t *testing.T) {
 		},
 	}
 	reader = bytes.NewReader(data)
-	lineReader = rdr.NewReader(reader)
+	lineReader = rdr.New(reader)
 	err = sbm.readArrayData(lineReader)
 	tst.MustBeNoError(err)
 	tst.MustBeEqual(*sbm, sbmExpected)
@@ -489,7 +489,7 @@ func Test_readArrayData(t *testing.T) {
 		},
 	}
 	reader = bytes.NewReader(data)
-	lineReader = rdr.NewReader(reader)
+	lineReader = rdr.New(reader)
 	err = sbm.readArrayData(lineReader)
 	tst.MustBeAnError(err)
 	tst.MustBeEqual(err.Error(), ErrBadSeparator)
@@ -513,7 +513,7 @@ func Test_readArrayData(t *testing.T) {
 		},
 	}
 	reader = bytes.NewReader(data)
-	lineReader = rdr.NewReader(reader)
+	lineReader = rdr.New(reader)
 	err = sbm.readArrayData(lineReader)
 	tst.MustBeAnError(err)
 	fmt.Println(err)
@@ -532,7 +532,7 @@ func Test_readArrayData(t *testing.T) {
 		},
 	}
 	reader = bytes.NewReader(data)
-	lineReader = rdr.NewReader(reader)
+	lineReader = rdr.New(reader)
 	err = sbm.readArrayData(lineReader)
 	tst.MustBeAnError(err)
 	tst.MustBeEqual(err.Error(), io.ErrUnexpectedEOF.Error())
@@ -989,7 +989,7 @@ func Test_readBottomHeaders(t *testing.T) {
 
 		// Run the Action.
 		reader = bytes.NewReader(test.data)
-		lineReader = rdr.NewReader(reader)
+		lineReader = rdr.New(reader)
 		err = test.sbm.readBottomHeaders(lineReader)
 
 		// Check.
@@ -1028,19 +1028,19 @@ func Test_readSeparator(t *testing.T) {
 
 	// Test #1. Positive.
 	reader = bytes.NewReader([]byte(NL))
-	lineReader = rdr.NewReader(reader)
+	lineReader = rdr.New(reader)
 	err = readSeparator(lineReader)
 	tst.MustBeNoError(err)
 
 	// Test #2. Negative.
 	reader = bytes.NewReader([]byte("ABC"))
-	lineReader = rdr.NewReader(reader)
+	lineReader = rdr.New(reader)
 	err = readSeparator(lineReader)
 	tst.MustBeAnError(err)
 
 	// Test #3. Negative.
 	reader = bytes.NewReader([]byte{})
-	lineReader = rdr.NewReader(reader)
+	lineReader = rdr.New(reader)
 	err = readSeparator(lineReader)
 	tst.MustBeAnError(err)
 }
