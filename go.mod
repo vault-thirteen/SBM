@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/vault-thirteen/auxie v0.10.2
-	github.com/vault-thirteen/tester v1.0.1
+	github.com/vault-thirteen/tester v1.1.0
 )
 
 require (
