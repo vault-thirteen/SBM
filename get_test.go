@@ -1,5 +1,3 @@
-// get_test.go.
-
 package sbm
 
 import (
@@ -27,10 +25,10 @@ func Test_GetFormat(t *testing.T) {
 		version: SbmFormatVersion1,
 	}
 
-	// Get the Format.
+	// Get the format.
 	format = sbm.GetFormat()
 
-	// Check the Result.
+	// Check the result.
 	tst.MustBeEqual(format, formatExpected)
 }
 
@@ -60,10 +58,10 @@ func Test_GetArrayBytes(t *testing.T) {
 		3,
 	}
 
-	// Get the Format.
+	// Get the format.
 	arrayBytes = sbm.GetArrayBytes()
 
-	// Check the Result.
+	// Check the result.
 	tst.MustBeEqual(arrayBytes, arrayBytesExpected)
 }
 
@@ -93,10 +91,10 @@ func Test_GetArrayBits(t *testing.T) {
 		bit.One,
 	}
 
-	// Get the Format.
+	// Get the format.
 	arrayBits = sbm.GetArrayBits()
 
-	// Check the Result.
+	// Check the result.
 	tst.MustBeEqual(arrayBits, arrayBitsExpected)
 }
 
@@ -118,10 +116,10 @@ func Test_GetArrayWidth(t *testing.T) {
 	}
 	arrayWidthExpected = 123
 
-	// Get the Format.
+	// Get the format.
 	arrayWidth = sbm.GetArrayWidth()
 
-	// Check the Result.
+	// Check the result.
 	tst.MustBeEqual(arrayWidth, arrayWidthExpected)
 }
 
@@ -143,10 +141,10 @@ func Test_GetArrayHeight(t *testing.T) {
 	}
 	arrayHeightExpected = 456
 
-	// Get the Format.
+	// Get the format.
 	arrayHeight = sbm.GetArrayHeight()
 
-	// Check the Result.
+	// Check the result.
 	tst.MustBeEqual(arrayHeight, arrayHeightExpected)
 }
 
@@ -168,9 +166,9 @@ func Test_GetArrayArea(t *testing.T) {
 	}
 	arrayAreaExpected = 789
 
-	// Get the Format.
+	// Get the format.
 	arrayArea = sbm.GetArrayArea()
 
-	// Check the Result.
+	// Check the result.
 	tst.MustBeEqual(arrayArea, arrayAreaExpected)
 }

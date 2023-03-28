@@ -1,15 +1,13 @@
-// SbmPixelArrayMetaData.go.
-
 package sbm
 
-// SBM Internal Data Model: Pixel Array Meta-Data.
+// SbmPixelArrayMetaData is meta-data for a pixel array.
 type SbmPixelArrayMetaData struct {
 
-	// Fixed Values.
+	// Fixed values.
 	width  uint
 	height uint
 	area   uint
 
-	// Values used in top and bottom Headers.
+	// Values used in top and bottom headers.
 	header SbmPixelArrayMetaDataHeader
 }

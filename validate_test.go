@@ -1,5 +1,3 @@
-// validate_test.go.
-
 package sbm
 
 import (
@@ -9,14 +7,11 @@ import (
 )
 
 func Test_validateFormat(t *testing.T) {
-
 	const VersionNone = 0
 
+	var tst = tester.New(t)
 	var err error
 	var headerFormat HeaderDataVersion
-	var tst *tester.Test
-
-	tst = tester.New(t)
 
 	// Test #1. Positive.
 	headerFormat = HeaderDataVersion{

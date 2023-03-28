@@ -1,5 +1,3 @@
-// new.go.
-
 package sbm
 
 import (
@@ -10,128 +8,94 @@ import (
 	rdr "github.com/vault-thirteen/auxie/reader"
 )
 
-// NewFromBitsArray creates a new SBM from an Array of Bits.
-// Performs the Fool Checks.
+// NewFromBitsArray creates a new SBM from an array of bits.
+// Performs the fool checks.
 func NewFromBitsArray(
-	arrayBits []bit.Bit, // List of all Bits of a 2D-Array in a 1D-Array.
-	arrayWidth uint, // Width of a 2D-Array.
-	arrayHeight uint, // Height of a 2D-Array.
-) (result *Sbm, err error) {
-
-	var arrayArea uint
-
-	// Preparation.
-	arrayArea = arrayWidth * arrayHeight
+	arrayBits []bit.Bit, // List of all bits of a 2D-array in a 1D-array.
+	arrayWidth uint, // Width of a 2D-array.
+	arrayHeight uint, // Height of a 2D-array.
+) (sbm *Sbm, err error) {
+	var arrayArea = arrayWidth * arrayHeight
 
 	// Checks.
 	if (arrayWidth == 0) ||
 		(arrayHeight == 0) ||
 		(uint(len(arrayBits)) != arrayArea) {
-		err = errors.New(ErrDimension)
-		return
+		return nil, errors.New(ErrDimension)
 	}
 
 	return newFromBitsArray(arrayBits, arrayWidth, arrayHeight)
 }
 
-// NewFromBytesArray creates a new SBM from an Array of Bytes.
-// Performs the Fool Checks.
+// NewFromBytesArray creates a new SBM from an array of bytes.
+// Performs the fool checks.
 func NewFromBytesArray(
-	arrayBytes []byte, // List of all Bytes in a 1D-Array.
-	arrayWidth uint, // Width of a 2D-Array.
-	arrayHeight uint, // Height of a 2D-Array.
-) (result *Sbm, err error) {
-
-	var arrayAreaReal uint
-	var arrayBitsCountMax uint
-	var arrayBitsCountMin uint
-
-	// Preparation.
-	arrayAreaReal = arrayWidth * arrayHeight
-	arrayBitsCountMax = uint(len(arrayBytes) * bit.BitsPerByte)
-	arrayBitsCountMin = arrayBitsCountMax - (bit.BitsPerByte - 1)
+	arrayBytes []byte, // List of all bytes in a 1D-array.
+	arrayWidth uint, // Width of a 2D-array.
+	arrayHeight uint, // Height of a 2D-array.
+) (sbm *Sbm, err error) {
+	arrayAreaReal := arrayWidth * arrayHeight
+	arrayBitsCountMax := uint(len(arrayBytes) * bit.BitsPerByte)
+	arrayBitsCountMin := arrayBitsCountMax - (bit.BitsPerByte - 1)
 
 	// Checks.
 	if (arrayWidth == 0) ||
 		(arrayHeight == 0) ||
 		(arrayAreaReal > arrayBitsCountMax) ||
 		(arrayAreaReal < arrayBitsCountMin) {
-		err = errors.New(ErrDimension)
-		return
+		return nil, errors.New(ErrDimension)
 	}
 
 	return newFromBytesArray(arrayBytes, arrayWidth, arrayHeight)
 }
 
-// newFromBitsArray creates a new SBM from an Array of Bits.
-// Does not perform the Fool Checks.
+// newFromBitsArray creates a new SBM from an array of bits.
+// Does not perform the fool checks.
 func newFromBitsArray(
-	arrayBits []bit.Bit, // List of all Bits of a 2D-Array in a 1D-Array.
-	arrayWidth uint, // Width of a 2D-Array.
-	arrayHeight uint, // Height of a 2D-Array.
-) (result *Sbm, err error) {
+	arrayBits []bit.Bit, // List of all bits of a 2D-array in a 1D-array.
+	arrayWidth uint, // Width of a 2D-array.
+	arrayHeight uint, // Height of a 2D-array.
+) (sbm *Sbm, err error) {
+	arrayArea := arrayWidth * arrayHeight
+	arrayBytes, _ := bit.ConvertBitsToBytes(arrayBits)
 
-	var arrayArea uint
-	var arrayBytes []byte
-
-	// Preparation.
-	arrayArea = arrayWidth * arrayHeight
-	arrayBytes, _ = bit.ConvertBitsToBytes(arrayBits)
-
-	return newFromBitsAndBytesArrays(
-		arrayBits,
-		arrayBytes,
-		arrayWidth,
-		arrayHeight,
-		arrayArea,
-	)
+	return newFromBitsAndBytesArrays(arrayBits, arrayBytes, arrayWidth, arrayHeight, arrayArea)
 }
 
-// newFromBytesArray creates a new SBM from an Array of Bits.
-// Does not perform the Fool Checks.
+// newFromBytesArray creates a new SBM from an array of bits.
+// Does not perform the fool checks.
 func newFromBytesArray(
-	arrayBytes []byte, // List of all Bytes in a 1D-Array.
-	arrayWidth uint, // Width of a 2D-Array.
-	arrayHeight uint, // Height of a 2D-Array.
-) (result *Sbm, err error) {
+	arrayBytes []byte, // List of all bytes in a 1D-array.
+	arrayWidth uint, // Width of a 2D-array.
+	arrayHeight uint, // Height of a 2D-array.
+) (sbm *Sbm, err error) {
+	arrayArea := arrayWidth * arrayHeight
 
-	var arrayArea uint
-	var arrayBits []bit.Bit
-
-	// Preparation.
-	arrayArea = arrayWidth * arrayHeight
-
-	// Convert all Bytes to Bits and remove the redundant Bits from the End.
-	arrayBits = bit.ConvertBytesToBits(arrayBytes)
+	// Convert all bytes to bits and remove the redundant bits from the end.
+	arrayBits := bit.ConvertBytesToBits(arrayBytes)
 	if arrayArea != uint(len(arrayBits)) {
 		arrayBits = arrayBits[0:arrayArea]
 	}
 
-	return newFromBitsAndBytesArrays(
-		arrayBits,
-		arrayBytes,
-		arrayWidth,
-		arrayHeight,
-		arrayArea,
-	)
+	return newFromBitsAndBytesArrays(arrayBits, arrayBytes, arrayWidth, arrayHeight, arrayArea)
 }
 
-// newFromBitsAndBytesArrays creates a new SBM from the Arrays of Bits and
-// Bytes. Does not perform the Fool Checks.
+// newFromBitsAndBytesArrays creates a new SBM from the arrays of bits and
+// bytes. Does not perform the fool checks.
 func newFromBitsAndBytesArrays(
-	arrayBits []bit.Bit, // List of all Bits of a 2D-Array in a 1D-Array.
-	arrayBytes []byte, // List of all Bytes in a 1D-Array.
-	arrayWidth uint, // Width of a 2D-Array.
-	arrayHeight uint, // Height of a 2D-Array.
+	arrayBits []bit.Bit, // List of all bits of a 2D-array in a 1D-array.
+	arrayBytes []byte, // List of all bytes in a 1D-array.
+	arrayWidth uint, // Width of a 2D-array.
+	arrayHeight uint, // Height of a 2D-array.
 	arrayArea uint,
-) (result *Sbm, err error) {
+) (sbm *Sbm, err error) {
 
 	// Create a new Object.
-	result = new(Sbm)
+	sbm = new(Sbm)
 
-	// Fill the Array Data and Dimensions.
-	result.format.version = SbmFormatVersion1
-	result.pixelArray = SbmPixelArray{
+	// Fill the array data and dimensions.
+	sbm.format.version = SbmFormatVersion1
+	sbm.pixelArray = SbmPixelArray{
 		data: SbmPixelArrayData{
 			bits:  arrayBits,
 			bytes: arrayBytes,
@@ -144,78 +108,71 @@ func newFromBitsAndBytesArrays(
 		},
 	}
 
-	// Fill the random Header Fields...
+	// Fill the random header fields ...
 
 	// 1. Width.
-	result.pixelArray.metaData.header.width.topLeft,
-		result.pixelArray.metaData.header.width.topRight,
+	sbm.pixelArray.metaData.header.width.topLeft,
+		sbm.pixelArray.metaData.header.width.topRight,
 		err = createRandomValuePair(arrayWidth)
 	if err != nil {
-		return
+		return nil, err
 	}
-	result.pixelArray.metaData.header.width.bottomLeft,
-		result.pixelArray.metaData.header.width.bottomRight,
+	sbm.pixelArray.metaData.header.width.bottomLeft,
+		sbm.pixelArray.metaData.header.width.bottomRight,
 		err = createRandomValuePair(arrayWidth)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	// 2. Height.
-	result.pixelArray.metaData.header.height.topLeft,
-		result.pixelArray.metaData.header.height.topRight,
+	sbm.pixelArray.metaData.header.height.topLeft,
+		sbm.pixelArray.metaData.header.height.topRight,
 		err = createRandomValuePair(arrayHeight)
 	if err != nil {
-		return
+		return nil, err
 	}
-	result.pixelArray.metaData.header.height.bottomLeft,
-		result.pixelArray.metaData.header.height.bottomRight,
+	sbm.pixelArray.metaData.header.height.bottomLeft,
+		sbm.pixelArray.metaData.header.height.bottomRight,
 		err = createRandomValuePair(arrayHeight)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	// 3. Area.
-	result.pixelArray.metaData.header.area.topLeft,
-		result.pixelArray.metaData.header.area.topRight,
+	sbm.pixelArray.metaData.header.area.topLeft,
+		sbm.pixelArray.metaData.header.area.topRight,
 		err = createRandomValuePair(arrayArea)
 	if err != nil {
-		return
+		return nil, err
 	}
-	result.pixelArray.metaData.header.area.bottomLeft,
-		result.pixelArray.metaData.header.area.bottomRight,
+	sbm.pixelArray.metaData.header.area.bottomLeft,
+		sbm.pixelArray.metaData.header.area.bottomRight,
 		err = createRandomValuePair(arrayArea)
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	return
+	return sbm, nil
 }
 
-// NewFromStream reads an SBM Object from the Stream.
-func NewFromStream(
-	reader io.Reader,
-) (*Sbm, error) {
-
-	var err error
-	var lineReader *rdr.Reader
-	var sbm *Sbm
-
+// NewFromStream reads an SBM object from the stream.
+func NewFromStream(reader io.Reader) (sbm *Sbm, err error) {
 	sbm = new(Sbm)
-	lineReader = rdr.New(reader)
+	lineReader := rdr.New(reader)
 
-	// Read the top Headers.
+	// Read the top headers.
 	err = sbm.readTopHeaders(lineReader)
 	if err != nil {
 		return nil, err
 	}
 
-	// Read the binary Array of Bits with the 'NewFromBitsArray Line' at the End.
+	// Read the binary array of bits with the 'NewFromBitsArray Line' at the end.
 	err = sbm.readArrayData(lineReader)
 	if err != nil {
 		return nil, err
 	}
 
-	// Read the bottom Headers.
+	// Read the bottom headers.
 	err = sbm.readBottomHeaders(lineReader)
 	if err != nil {
 		return nil, err

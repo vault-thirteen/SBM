@@ -1,5 +1,3 @@
-// get.go.
-
 package sbm
 
 import (

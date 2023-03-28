@@ -1,13 +1,10 @@
-// SbmFormat.go.
-
 package sbm
 
-// Version.
 const (
 	SbmFormatVersion1 = 1
 )
 
-// SBM Internal Data Model: Format Parameters.
+// SbmFormat is the format of SBM.
 type SbmFormat struct {
 	version byte
 }

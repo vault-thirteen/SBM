@@ -1,8 +1,6 @@
-// SbmPixelArray.go.
-
 package sbm
 
-// SBM Internal Data Model: Pixel Array Data & Parameters.
+// SbmPixelArray is the pixel array data & parameters.
 type SbmPixelArray struct {
 	data     SbmPixelArrayData
 	metaData SbmPixelArrayMetaData

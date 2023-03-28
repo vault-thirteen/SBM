@@ -1,5 +1,3 @@
-// new_test.go.
-
 package sbm
 
 import (

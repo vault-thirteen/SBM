@@ -1,5 +1,3 @@
-// string.go.
-
 package sbm
 
 import (
@@ -12,25 +10,17 @@ const (
 	ErrHeaderEnding = "header ending syntax error"
 )
 
-func removeCRLF(
-	rawHeader []byte,
-) ([]byte, error) {
-
-	var err error
-	var idxLast int
-
-	// Check Header Size.
+func trimHeader(rawHeader []byte) (trimmedHeader []byte, err error) {
+	// Check header's size.
 	if len(rawHeader) < 2 {
-		err = errors.New(ErrHeaderSize)
-		return []byte{}, err
+		return trimmedHeader, errors.New(ErrHeaderSize)
 	}
 
-	// Check Header Ending.
-	idxLast = len(rawHeader) - 1
-	if (rawHeader[idxLast-1] != '\r') ||
-		(rawHeader[idxLast] != '\n') {
-		err = errors.New(ErrHeaderEnding)
-		return []byte{}, err
+	// Check header's ending.
+	idxLast := len(rawHeader) - 1
+	if (rawHeader[idxLast-1] != CR) ||
+		(rawHeader[idxLast] != LF) {
+		return trimmedHeader, errors.New(ErrHeaderEnding)
 	}
 
 	return rawHeader[0 : idxLast-1], nil

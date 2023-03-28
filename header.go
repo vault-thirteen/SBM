@@ -1,15 +1,13 @@
-// header.go.
-
 package sbm
 
-// ASCII Symbols.
+// ASCII symbols.
 const (
-	CR = "\r"
-	LF = "\n"
-	NL = CR + LF
+	CR = '\r'
+	LF = '\n'
+	NL = string(CR) + string(LF)
 )
 
-// Meta-Data Header Parameters.
+// Meta-data header parameters.
 const (
 	HeaderPartsSeparator    = " "
 	HeaderPartsBracketLeft  = "("
@@ -67,8 +65,8 @@ const (
 		NL
 )
 
-// MIME Type.
-// This MIME Type is un-official, not registered in IANA.
+// MimeType is the MIME type.
+// This MIME type is not official, it is not registered in IANA.
 const (
 	MimeType = "image/x-portable-bitmap"
 )

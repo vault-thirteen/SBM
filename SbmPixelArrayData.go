@@ -1,13 +1,11 @@
-// SbmPixelArrayData.go.
-
 package sbm
 
 import (
 	"github.com/vault-thirteen/auxie/bit"
 )
 
-// SBM Internal Data Model: Pixel Array Data.
+// SbmPixelArrayData contains pixel array data.
 type SbmPixelArrayData struct {
-	bytes []byte
 	bits  []bit.Bit
+	bytes []byte
 }

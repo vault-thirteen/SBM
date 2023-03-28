@@ -1,5 +1,3 @@
-// write_test.go.
-
 package sbm
 
 import (

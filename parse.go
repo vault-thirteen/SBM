@@ -1,5 +1,3 @@
-// parse.go.
-
 package sbm
 
 import (
@@ -13,180 +11,143 @@ import (
 
 // Errors.
 const (
-	ErrFormat            = "Format is unrecognized"
-	ErrHeaderSyntax      = "Header Syntax Error"
-	ErrfHeaderUnexpected = "Unexpected Header: '%v'"
-	ErrOverflow          = "Overflow"
-	ErrIntegrity         = "Integrity Failure"
+	ErrFormat            = "format is unrecognized"
+	ErrHeaderSyntax      = "header syntax error"
+	ErrfHeaderUnexpected = "unexpected header: '%v'"
+	ErrOverflow          = "overflow"
+	ErrIntegrity         = "integrity failure"
 )
 
-// parseHeaderFormat parses the Format Header.
-func (sbm *Sbm) parseHeaderFormat(
-	rawHeader []byte,
-) (err error) {
-
+// parseHeaderFormat parses the format header.
+func (sbm *Sbm) parseHeaderFormat(rawHeader []byte) (err error) {
 	if !bytes.Equal(rawHeader, []byte(Header_FormatName)) {
-		err = errors.New(ErrFormat)
-		return
+		return errors.New(ErrFormat)
 	}
 
-	return
+	return nil
 }
 
-// parseHeaderVersion parses the 'Version' Header.
-func parseHeaderVersion(
-	rawHeader []byte,
-) (headerData HeaderDataVersion, err error) {
-
-	var headerParts []string
-	var headerPartsCountExpected int
-	var rawHeaderTrimmed []byte
-	var versionNumber byte
-	var versionNumberTmp uint64
+// parseHeaderVersion parses the version header.
+func parseHeaderVersion(rawHeader []byte) (headerData HeaderDataVersion, err error) {
 
 	// Trim.
-	rawHeaderTrimmed, err = removeCRLF(rawHeader)
+	var rawHeaderTrimmed []byte
+	rawHeaderTrimmed, err = trimHeader(rawHeader)
 	if err != nil {
-		return
+		return headerData, err
 	}
 
 	// Split.
-	headerPartsCountExpected = 2
-	headerParts = strings.Split(string(rawHeaderTrimmed), HeaderPartsSeparator)
+	headerPartsCountExpected := 2
+	headerParts := strings.Split(string(rawHeaderTrimmed), HeaderPartsSeparator)
 	if len(headerParts) != headerPartsCountExpected {
-		err = errors.New(ErrHeaderSyntax)
-		return
+		return headerData, errors.New(ErrHeaderSyntax)
 	}
 
-	// Check the Header Name.
+	// Check the header name.
 	if headerParts[0] != HeaderPrefix_Version {
-		err = fmt.Errorf(ErrfHeaderUnexpected, headerParts[0])
-		return
+		return headerData, fmt.Errorf(ErrfHeaderUnexpected, headerParts[0])
 	}
 
-	// Parse the Version Number.
+	// Parse the version number.
+	var versionNumberTmp uint64
 	versionNumberTmp, err = strconv.ParseUint(headerParts[1], 10, 64)
 	if err != nil {
-		return
+		return headerData, err
 	}
 	if versionNumberTmp > math.MaxUint8 {
-		err = errors.New(ErrOverflow)
-		return
+		return headerData, errors.New(ErrOverflow)
 	}
-	versionNumber = byte(versionNumberTmp)
 
-	// Save the Version Number.
-	headerData.version = versionNumber
+	// Save the version number.
+	headerData.version = byte(versionNumberTmp)
 
-	return
+	return headerData, nil
 }
 
-// parseHeaderSize parses the Size Header.
-func parseHeaderSize(
-	rawHeader []byte,
-	headerNameExpected string,
-) (headerData HeaderDataSize, err error) {
-
-	var headerParts []string
-	var headerPartSizeLeft string
-	var headerPartSizeRight string
-	var headerPartsCountExpected int
-	var rawHeaderTrimmed []byte
-	var sizeFixed uint
-	var sizeRandomLeft uint
-	var sizeRandomRight uint
-	var sizeTmp uint64
+// parseHeaderSize parses the size header.
+func parseHeaderSize(rawHeader []byte, headerNameExpected string) (headerData HeaderDataSize, err error) {
 
 	// Trim.
-	rawHeaderTrimmed, err = removeCRLF(rawHeader)
+	var rawHeaderTrimmed []byte
+	rawHeaderTrimmed, err = trimHeader(rawHeader)
 	if err != nil {
-		return
+		return headerData, err
 	}
 
 	// Split.
-	headerPartsCountExpected = 5
-	headerParts = strings.Split(string(rawHeaderTrimmed), HeaderPartsSeparator)
+	headerPartsCountExpected := 5
+	headerParts := strings.Split(string(rawHeaderTrimmed), HeaderPartsSeparator)
 	if len(headerParts) != headerPartsCountExpected {
-		err = errors.New(ErrHeaderSyntax)
-		return
+		return headerData, errors.New(ErrHeaderSyntax)
 	}
 
-	// Check the Header Name.
+	// Check the header name.
 	if headerParts[0] != headerNameExpected {
-		err = fmt.Errorf(ErrfHeaderUnexpected, headerParts[0])
-		return
+		return headerData, fmt.Errorf(ErrfHeaderUnexpected, headerParts[0])
 	}
 
-	// Parse the fixed Size.
+	// Parse the fixed size.
+	var sizeTmp uint64
 	sizeTmp, err = strconv.ParseUint(headerParts[1], 10, 64)
 	if err != nil {
-		return
+		return headerData, err
 	}
-	sizeFixed = uint(sizeTmp)
+	sizeFixed := uint(sizeTmp)
 
-	// Parse the random left Size.
-	headerPartSizeLeft = headerParts[2]
+	// Parse the random left size.
+	headerPartSizeLeft := headerParts[2]
 	if !strings.HasPrefix(headerPartSizeLeft, HeaderPartsBracketLeft) {
-		err = errors.New(ErrHeaderSyntax)
-		return
+		return headerData, errors.New(ErrHeaderSyntax)
 	}
 	headerPartSizeLeft = strings.TrimLeft(headerPartSizeLeft, HeaderPartsBracketLeft)
 	sizeTmp, err = strconv.ParseUint(headerPartSizeLeft, 10, 64)
 	if err != nil {
-		return
+		return headerData, err
 	}
-	sizeRandomLeft = uint(sizeTmp)
+	sizeRandomLeft := uint(sizeTmp)
 
-	// Plus Sign.
+	// Plus sign.
 	if headerParts[3] != HeaderPartsPlus {
-		err = errors.New(ErrHeaderSyntax)
-		return
+		return headerData, errors.New(ErrHeaderSyntax)
 	}
 
-	// Parse the random right Size.
-	headerPartSizeRight = headerParts[4]
+	// Parse the random right size.
+	headerPartSizeRight := headerParts[4]
 	if !strings.HasSuffix(headerPartSizeRight, HeaderPartsBracketRight) {
-		err = errors.New(ErrHeaderSyntax)
-		return
+		return headerData, errors.New(ErrHeaderSyntax)
 	}
 	headerPartSizeRight = strings.TrimRight(headerPartSizeRight, HeaderPartsBracketRight)
 	sizeTmp, err = strconv.ParseUint(headerPartSizeRight, 10, 64)
 	if err != nil {
-		return
+		return headerData, err
 	}
-	sizeRandomRight = uint(sizeTmp)
+	sizeRandomRight := uint(sizeTmp)
 
-	// Verify the Integrity of the Size.
+	// Verify the integrity of the size.
 	if sizeFixed != (sizeRandomLeft + sizeRandomRight) {
-		err = errors.New(ErrIntegrity)
-		return
+		return headerData, errors.New(ErrIntegrity)
 	}
 
-	// Save the Data.
+	// Save the data.
 	headerData.sizeFixed = sizeFixed
 	headerData.sizeRandomLeft = sizeRandomLeft
 	headerData.sizeRandomRight = sizeRandomRight
 
-	return
+	return headerData, nil
 }
 
-// parseHeaderWidth parses the 'Width' Header.
-func parseHeaderWidth(
-	rawHeader []byte,
-) (headerData HeaderDataSize, err error) {
+// parseHeaderWidth parses the width header.
+func parseHeaderWidth(rawHeader []byte) (headerData HeaderDataSize, err error) {
 	return parseHeaderSize(rawHeader, HeaderPrefix_Width)
 }
 
-// parseHeaderHeight parses the 'Height' Header.
-func parseHeaderHeight(
-	rawHeader []byte,
-) (headerData HeaderDataSize, err error) {
+// parseHeaderHeight parses the height header.
+func parseHeaderHeight(rawHeader []byte) (headerData HeaderDataSize, err error) {
 	return parseHeaderSize(rawHeader, HeaderPrefix_Height)
 }
 
-// parseHeaderArea parses the 'Area' Header.
-func parseHeaderArea(
-	rawHeader []byte,
-) (headerData HeaderDataSize, err error) {
+// parseHeaderArea parses the area header.
+func parseHeaderArea(rawHeader []byte) (headerData HeaderDataSize, err error) {
 	return parseHeaderSize(rawHeader, HeaderPrefix_Area)
 }

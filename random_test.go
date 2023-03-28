@@ -1,5 +1,3 @@
-// random_test.go.
-
 package sbm
 
 import (

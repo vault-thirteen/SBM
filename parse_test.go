@@ -1,5 +1,3 @@
-// parse_test.go.
-
 package sbm
 
 import (

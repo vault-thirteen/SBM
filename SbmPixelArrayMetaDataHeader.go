@@ -1,8 +1,6 @@
-// SbmPixelArrayMetaDataHeader.go.
-
 package sbm
 
-// SBM Internal Data Model: Pixel Array Meta-Data: Header Parameters.
+// SbmPixelArrayMetaDataHeader is a pixel array meta-data header.
 type SbmPixelArrayMetaDataHeader struct {
 	width  SbmPixelArrayMetaDataHeaderData
 	height SbmPixelArrayMetaDataHeaderData

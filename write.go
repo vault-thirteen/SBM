@@ -1,5 +1,3 @@
-// write.go.
-
 package sbm
 
 import (
@@ -7,164 +5,142 @@ import (
 	"io"
 )
 
-// Write writes an SBM Object into the Stream.
-func (sbm *Sbm) Write(
-	writer io.Writer,
-) (err error) {
+// Write writes an SBM object into the stream.
+func (sbm *Sbm) Write(writer io.Writer) (err error) {
 
-	// Write the top Headers.
+	// Write the top headers.
 	err = sbm.writeTopHeaders(writer)
 	if err != nil {
-		return
+		return err
 	}
 
-	// Write the binary Array of Bits with the 'NewFromBitsArray Line' at the End.
+	// Write the binary array of bits with the 'NewFromBitsArray Line' at the end.
 	err = sbm.writeArrayData(writer)
 	if err != nil {
-		return
+		return err
 	}
 
-	// Write the bottom Headers.
+	// Write the bottom headers.
 	err = sbm.writeBottomHeaders(writer)
 	if err != nil {
-		return
+		return err
 	}
 
-	return
+	return nil
 }
 
-func (sbm *Sbm) writeTopHeaders(
-	writer io.Writer,
-) (err error) {
-
-	var msg []byte
+func (sbm *Sbm) writeTopHeaders(writer io.Writer) (err error) {
 
 	// 1. Title.
-	msg = []byte(Header_FormatName)
-	_, err = writer.Write(msg)
+	_, err = writer.Write([]byte(Header_FormatName))
 	if err != nil {
-		return
+		return err
 	}
 
 	// 2. Version.
-	msg = []byte(fmt.Sprintf(HeaderFormat_Version, sbm.format.version))
-	_, err = writer.Write(msg)
+	_, err = writer.Write([]byte(fmt.Sprintf(HeaderFormat_Version, sbm.format.version)))
 	if err != nil {
-		return
+		return err
 	}
 
 	// 3. Width.
-	msg = []byte(
+	_, err = writer.Write([]byte(
 		fmt.Sprintf(
 			HeaderFormat_Width,
 			sbm.pixelArray.metaData.width,
 			sbm.pixelArray.metaData.header.width.topLeft,
 			sbm.pixelArray.metaData.header.width.topRight,
 		),
-	)
-	_, err = writer.Write(msg)
+	))
 	if err != nil {
-		return
+		return err
 	}
 
 	// 4. Height
-	msg = []byte(
+	_, err = writer.Write([]byte(
 		fmt.Sprintf(
 			HeaderFormat_Height,
 			sbm.pixelArray.metaData.height,
 			sbm.pixelArray.metaData.header.height.topLeft,
 			sbm.pixelArray.metaData.header.height.topRight,
 		),
-	)
-	_, err = writer.Write(msg)
+	))
 	if err != nil {
-		return
+		return err
 	}
 
 	// 5. Area.
-	msg = []byte(
+	_, err = writer.Write([]byte(
 		fmt.Sprintf(
 			HeaderFormat_Area,
 			sbm.pixelArray.metaData.area,
 			sbm.pixelArray.metaData.header.area.topLeft,
 			sbm.pixelArray.metaData.header.area.topRight,
 		),
-	)
-	_, err = writer.Write(msg)
+	))
 	if err != nil {
-		return
+		return err
 	}
 
-	return
+	return nil
 }
 
-func (sbm *Sbm) writeArrayData(
-	writer io.Writer,
-) (err error) {
-
-	var msg []byte
+func (sbm *Sbm) writeArrayData(writer io.Writer) (err error) {
 
 	// Write the binary Array of Bits with the 'NewFromBitsArray Line' at the End.
 	_, err = writer.Write(sbm.pixelArray.data.bytes)
 	if err != nil {
-		return
-	}
-	msg = []byte(NL)
-	_, err = writer.Write(msg)
-	if err != nil {
-		return
+		return err
 	}
 
-	return
+	_, err = writer.Write([]byte(NL))
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (sbm *Sbm) writeBottomHeaders(
-	writer io.Writer,
-) (err error) {
-
-	var msg []byte
+func (sbm *Sbm) writeBottomHeaders(writer io.Writer) (err error) {
 
 	// 1. Width.
-	msg = []byte(
+	_, err = writer.Write([]byte(
 		fmt.Sprintf(
 			HeaderFormat_Width,
 			sbm.pixelArray.metaData.width,
 			sbm.pixelArray.metaData.header.width.bottomLeft,
 			sbm.pixelArray.metaData.header.width.bottomRight,
 		),
-	)
-	_, err = writer.Write(msg)
+	))
 	if err != nil {
-		return
+		return err
 	}
 
 	// 2. Height
-	msg = []byte(
+	_, err = writer.Write([]byte(
 		fmt.Sprintf(
 			HeaderFormat_Height,
 			sbm.pixelArray.metaData.height,
 			sbm.pixelArray.metaData.header.height.bottomLeft,
 			sbm.pixelArray.metaData.header.height.bottomRight,
 		),
-	)
-	_, err = writer.Write(msg)
+	))
 	if err != nil {
-		return
+		return err
 	}
 
 	// 3. Area.
-	msg = []byte(
+	_, err = writer.Write([]byte(
 		fmt.Sprintf(
 			HeaderFormat_Area,
 			sbm.pixelArray.metaData.area,
 			sbm.pixelArray.metaData.header.area.bottomLeft,
 			sbm.pixelArray.metaData.header.area.bottomRight,
 		),
-	)
-	_, err = writer.Write(msg)
+	))
 	if err != nil {
-		return
+		return err
 	}
 
-	return
+	return nil
 }
