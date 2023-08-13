@@ -1,10 +1,10 @@
 module github.com/vault-thirteen/SBM
 
-go 1.19
+go 1.20
 
 require (
-	github.com/vault-thirteen/auxie v0.12.5
-	github.com/vault-thirteen/tester v1.1.0
+	github.com/vault-thirteen/auxie v0.13.0
+	github.com/vault-thirteen/tester v1.2.0
 )
 
 require (
