@@ -3,7 +3,7 @@ package sbm
 import (
 	"testing"
 
-	"github.com/vault-thirteen/tester"
+	"github.com/vault-thirteen/auxie/tester"
 )
 
 func Test_validateFormat(t *testing.T) {
