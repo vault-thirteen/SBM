@@ -1,8 +1,8 @@
 module github.com/vault-thirteen/SBM
 
-go 1.26.9
+go 1.26.10
 
-require github.com/vault-thirteen/auxie v0.41.2
+require github.com/vault-thirteen/auxie v0.41.3
 
 require (
 	github.com/kr/pretty v0.3.1 // indirect
